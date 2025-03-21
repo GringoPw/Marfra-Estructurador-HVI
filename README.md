@@ -1,7 +1,7 @@
-# **Changelog**
+# **Desarrollo a medida estructurador de datos TXT**
 
 ## *Versión Beta*
-
+Sistema que captura los datos de archivos de texto de maquinas HVI. Los transforma y exporta a excel.
 
 *Funcionalidade*s:
 
