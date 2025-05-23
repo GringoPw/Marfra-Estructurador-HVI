@@ -25,3 +25,8 @@ Funcionalidades:
     -Al pasar el cursor sobre un error, se muestra una breve descripción del problema identificado.
 Visuales:
 -Modo oscuro: Se agregó un nuevo botón que permite alternar entre un modo claro y oscuro para mejorar la experiencia del usuario.
+
+Versión 3.0
+Funcionalidades:
+-Eliminamos boton promedio por deshuso.
+-Se implemento nuevo formato de se carga de nueva maquina ART R.
