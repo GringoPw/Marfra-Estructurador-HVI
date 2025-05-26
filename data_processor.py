@@ -134,150 +134,7 @@ def cargar_datos_formato_dos(ruta_archivo):
             
     except Exception as e:
         print(f"Error al cargar el archivo: {e}")
-
-def cargar_datos_formato_tres(ruta_archivo):
-    """
-    Carga y ajusta datos del tercer formato de archivo (PREMIER ART R).
-    """
-    try:
-        # Leer todas las líneas del archivo
-        with open(ruta_archivo, "r", encoding='latin1') as archivo:
-            lineas = archivo.readlines()
-        
-        # Encontrar la línea donde empiezan los datos
-        # En el formato 3, los datos empiezan con números de test (1, 2, 3, etc.)
-        inicio_datos = None
-        for i, linea in enumerate(lineas):
-            linea_limpia = linea.strip()
-            # Buscar líneas que empiecen con números seguidos de espacios y más números
-            if len(linea_limpia) > 0 and linea_limpia.split()[0].isdigit():
-                # Verificar que sea una línea de datos (debe tener al menos 10 campos)
-                partes = linea_limpia.split()
-                if len(partes) >= 10:
-                    inicio_datos = i
-                    break
-        
-        if inicio_datos is None:
-            print("No se pudo encontrar el inicio de los datos")
-            return pd.DataFrame()
-        
-        # Extraer solo las líneas de datos válidas
-        lineas_datos = []
-        for i in range(inicio_datos, len(lineas)):
-            linea = lineas[i].strip()
-            # Saltar líneas vacías
-            if not linea:
-                continue
-            
-            partes = linea.split()
-            # Verificar que sea una línea de datos válida
-            if (len(partes) >= 10 and 
-                partes[0].isdigit() and  # Primer campo es número de test
-                len(partes[1]) >= 6):    # Segundo campo es Sub ID (049321, etc.)
-                lineas_datos.append(linea)
-            # Si encontramos líneas que no son datos, parar
-            elif any(keyword in linea.lower() for keyword in ['temp', 'avg', 'min', 'max']):
-                break
-        
-        if not lineas_datos:
-            print("No se encontraron datos válidos")
-            return pd.DataFrame()
-        
-        # Procesar cada línea de datos
-        datos_procesados = []
-        for linea in lineas_datos:
-            partes = linea.split()
-            
-            if len(partes) >= 15:  # Verificar que tenga suficientes columnas
-                # Extraer los datos según las posiciones observadas en el archivo
-                fila_datos = {
-                    'Test_No': partes[0],      # Número de test
-                    'Sub_ID': partes[1],       # Sub ID
-                    'UHML': partes[2],         # UHML
-                    'ML': partes[3],           # ML
-                    'UI': partes[4],           # UI
-                    'Str': partes[5],          # Str
-                    'Elg': partes[6],          # Elg
-                    'Mic': partes[7],          # Mic
-                    'Rd': partes[8],           # Rd
-                    'b': partes[9],            # +b
-                    'CG': partes[10],          # C.G.
-                    'T_Cnt': partes[11],       # T.Cnt
-                    'T_Area': partes[12],      # T.Area
-                    'Grade': partes[13],       # Grade
-                    'MR': partes[14],          # MR
-                    'Moist': partes[15] if len(partes) > 15 else "",  # Moist
-                    'SFI': partes[16] if len(partes) > 16 else ""     # SFI
-                }
-                datos_procesados.append(fila_datos)
-        
-        if not datos_procesados:
-            print("No se pudieron procesar los datos")
-            return pd.DataFrame()
-        
-        # Crear DataFrame
-        df = pd.DataFrame(datos_procesados)
-        
-        # Aplicar filtros para limpiar datos
-        df = filtrar_metrica_formato_tres(df)
-        
-        # Crear DataFrame con formato estándar
-        datos_formato_deseado = pd.DataFrame(columns=COLUMNAS_ESTANDAR)
-        
-        # Mapear las columnas al formato estándar
-        datos_formato_deseado["Sub ID"] = df["Sub_ID"]
-        datos_formato_deseado["UHML"] = df["UHML"]
-        datos_formato_deseado["ML"] = df["ML"]
-        datos_formato_deseado["UI"] = df["UI"]
-        datos_formato_deseado["Str"] = df["Str"]
-        datos_formato_deseado["Elg"] = df["Elg"]
-        datos_formato_deseado["Mic"] = df["Mic"]
-        datos_formato_deseado["Amt"] = ""  # No disponible en este formato
-        datos_formato_deseado["Rd"] = df["Rd"]
-        datos_formato_deseado["+b"] = df["b"]
-        datos_formato_deseado["CG"] = df["CG"]
-        datos_formato_deseado["T.Cnt"] = df["T_Cnt"]
-        datos_formato_deseado["T.Area"] = df["T_Area"]
-        datos_formato_deseado["Leaf"] = df["Grade"]  # Mapear Grade a Leaf
-        datos_formato_deseado["MR"] = df["MR"]
-        datos_formato_deseado["SFI"] = df["SFI"]
-        
-        # Asignar grados basados en CG
-        datos_formato_deseado["Grado"] = datos_formato_deseado["CG"].apply(obtener_grado)
-        datos_formato_deseado["Grado SAP"] = datos_formato_deseado["Grado"].map(grado_mapping)
-        
-        # Reorganizar columnas en el orden estándar
-        datos_formato_deseado = datos_formato_deseado[COLUMNAS_ESTANDAR]
-        
-        # Validación y ordenamiento de 'Sub ID'
-        datos_formato_deseado["Sub ID"] = pd.to_numeric(datos_formato_deseado["Sub ID"], errors="coerce")
-        datos_formato_deseado.sort_values(by=['Sub ID'], inplace=True, ascending=True)
-        
-        validar_sub_id_consecutivos(datos_formato_deseado)
-        
-        return datos_formato_deseado
-            
-    except Exception as e:
-        print(f"Error al cargar el archivo formato 3: {e}")
-        return pd.DataFrame()
-
-def filtrar_metrica_formato_tres(datos):
-    """
-    Filtra las filas con métricas específicas para el formato 3.
-    """
-    # Filtrar filas que no sean datos válidos
-    datos = datos[~datos['Test_No'].isin(['Min:', 'Max:', 'Avg:', 'S.D:', 'CV%:', 'LS:', 'No.'])]
     
-    # Eliminar filas donde Sub_ID no sea numérico
-    datos = datos[datos['Sub_ID'].str.isdigit()]
-    
-    # Eliminar filas con datos incompletos
-    datos = datos.dropna(subset=['Sub_ID', 'UHML', 'CG'])
-    
-    return datos
-
-
-
 def obtener_grado(valor_cg):
     try:
         # Convertimos el valor a cadena y eliminamos espacios en blanco
@@ -400,17 +257,289 @@ def validar_sub_id_consecutivos(df):
     
     return errores
 
-
+def filtrar_metrica_formato3(df):
     """
     Filtra las filas con métricas específicas para el formato 3.
+    Corta la lectura cuando encuentra 'Statistics' en cualquier columna.
     """
-    # Filtrar filas que no sean datos válidos
-    datos = datos[~datos['Test_No'].isin(['Min:', 'Max:', 'Avg:', 'S.D:', 'CV%:', 'LS:', 'No.'])]
+    try:
+        # Buscar la fila donde aparece 'Statistics' en cualquier columna
+        indices_stats = []
+        
+        for idx, row in df.iterrows():
+            for col in df.columns:
+                valor = str(row[col]).strip().upper()
+                # Buscar 'STATISTICS' de forma más flexible
+                
+                if 'STATISTICS' in valor or valor == 'STATISTICS' or valor == '/ Temp( C)' :
+                    indices_stats.append(idx)
+                    print(f"Encontrado 'Statistics' en fila {idx}, columna {col}: '{row[col]}'")
+                    break
+        
+        # Si encontramos 'Statistics', cortamos el DataFrame hasta esa fila (sin incluirla)
+        if indices_stats:
+            primer_stats = min(indices_stats)
+            df = df.loc[:primer_stats-1]
+            print(f"Cortado en fila {primer_stats} por encontrar 'Statistics'. Filas restantes: {len(df)}")
+        else:
+            print("No se encontró 'Statistics' en el archivo")
+        
+        # Filtros adicionales si es necesario
+        df = df.dropna(how='all')  # Eliminar filas completamente vacías
+        
+        return df
     
-    # Eliminar filas donde Sub_ID no sea numérico
-    datos = datos[datos['Sub_ID'].str.isdigit()]
+    except Exception as e:
+        print(f"Error en filtrar_metrica_formato3: {e}")
+        return df
+
+
+def procesar_sub_id(sub_id):
+    """
+    Procesa el Sub ID según las reglas:
+    - Si tiene 7 o más dígitos: devuelve los últimos 6
+    - Si tiene 5 o más dígitos: devuelve los últimos 4
+    - Si tiene menos de 5 dígitos: devuelve el valor original
+    """
+    try:
+        # Convertir a string y limpiar espacios
+        sub_id_str = str(sub_id).strip()
+        
+        # Verificar si es numérico
+        if not sub_id_str.isdigit():
+            return sub_id_str
+        
+        # Aplicar las reglas según la longitud
+        longitud = len(sub_id_str)
+        
+        if longitud >= 7:
+            return sub_id_str[-6:]  # Últimos 6 dígitos
+        elif longitud >= 5:
+            return sub_id_str[-4:]  # Últimos 4 dígitos
+        else:
+            return sub_id_str       # Valor original
     
-    # Eliminar filas con datos incompletos
-    datos = datos.dropna(subset=['Sub_ID', 'UHML', 'CG'])
+    except Exception as e:
+        print(f"Error procesando Sub ID '{sub_id}': {e}")
+        return str(sub_id)
+
+def filtrar_datos_limpios(ruta_archivo, debug=False):
+    """
+    Elimina completamente las filas que contengan patrones de encabezados o estadísticas.
+    Solo devuelve las filas que son datos puros.
+    """
+    patrones_sucios = [
+        r"System Test Report",
+        r"PREMIER ART R",
+        r"\d{2}-\d{2}-\d{4}\d{2}:\d{2}[AP]M",
+        r"Test ID",
+        r"Test Type",
+        r"Test Date",
+        r"Remarks",
+        r"COOP\.AGR",
+        r"UHML.*ML.*UI.*Str.*Elg.*Mic",
+        r"Test.*Sub ID.*\(mm\)",
+        r"No.*\)",
+        r"Statistics",
+        r"Avg\d*-?\d*",
+        r"Median",
+        r"SD",
+        r"CV%",
+        r"Min",
+        r"Max",
+        r"MARFRA SA",
+        r"Temp\(.*C\)",
+        r"^\s*$",  # Líneas vacías
+        r"^\s*\d+\s*$",  # Líneas con solo números
+        r"tifier.*MGTA.*LOTE"
+    ]
     
-    return datos
+    lineas_limpias = []
+    
+    try:
+        with open(ruta_archivo, 'r', encoding='latin1') as archivo:
+            lineas = archivo.readlines()
+        
+        for i, linea in enumerate(lineas):
+            linea_limpia = linea.strip()
+            if not linea_limpia:
+                continue
+
+            # Revisar patrones sucios
+            if any(re.search(p, linea_limpia, re.IGNORECASE) for p in patrones_sucios):
+                if debug:
+                    print(f"Eliminada (patrón sucio): {linea_limpia}")
+                continue
+
+            partes = linea_limpia.split()
+
+            # Filtrar por exceso de columnas
+            if len(partes) > 16:
+                if debug:
+                    print(f"Eliminada (demasiadas columnas {len(partes)}): {linea_limpia}")
+                continue
+
+            # Validar si el primer campo es numérico
+            try:
+                float(partes[0])
+                lineas_limpias.append(linea_limpia)
+                if debug:
+                    print(f"Aceptada: {linea_limpia}")
+            except ValueError:
+                if debug:
+                    print(f"Eliminada (primer campo no numérico): {linea_limpia}")
+                continue
+
+    except Exception as e:
+        print(f"Error al procesar el archivo: {e}")
+        return []
+
+    if debug:
+        print(f"\nResumen: {len(lineas_limpias)} líneas válidas encontradas")
+
+    return lineas_limpias
+
+# Ejemplo de uso en la función principal:
+def cargar_datos_formato_tres(ruta_archivo):
+    """
+    Carga y ajusta datos del formato 3 usando limpieza previa línea por línea.
+    """
+    try:
+        # Limpiar las líneas
+        print("Cargando datos del formato 3...")
+        lineas_limpias = filtrar_datos_limpios(ruta_archivo)
+        
+        # Convertirlas a DataFrame
+        from io import StringIO
+        datos_txt = '\n'.join(lineas_limpias)
+        df = pd.read_csv(StringIO(datos_txt), sep=r'\s+', header=None)
+
+        # Crear DataFrame con formato deseado
+        datos_formato_deseado = pd.DataFrame(columns=COLUMNAS_ESTANDAR)
+
+        # Asignación de columnas con protección
+        datos_formato_deseado["Sub ID"] = df[0].apply(procesar_sub_id)
+        datos_formato_deseado["UHML"] = df[1]
+        datos_formato_deseado["ML"] = df[2]
+        datos_formato_deseado["UI"] = df[3]
+        datos_formato_deseado["Str"] = df[4]
+        datos_formato_deseado["Elg"] = df[5]
+        datos_formato_deseado["Mic"] = df[6]
+        datos_formato_deseado["Amt"] = df[7]
+        datos_formato_deseado["Rd"] = df[8]
+        datos_formato_deseado["+b"] = df[9]
+        datos_formato_deseado["CG"] = df[10]
+
+        # Grado y SAP
+        datos_formato_deseado["Grado"] = df[10].apply(obtener_grado)
+        datos_formato_deseado["Grado SAP"] = datos_formato_deseado["Grado"].map(grado_mapping)
+
+        # Columnas opcionales
+        datos_formato_deseado["T.Cnt"] = df[11] if df.shape[1] > 11 else ""
+        datos_formato_deseado["T.Area"] = df[12] if df.shape[1] > 12 else ""
+        datos_formato_deseado["Leaf"] = df[13] if df.shape[1] > 13 else ""
+        datos_formato_deseado["MR"] = df[14] if df.shape[1] > 14 else ""
+        datos_formato_deseado["SFI"] = df[15] if df.shape[1] > 15 else ""
+
+        # Ordenar y validar
+        datos_formato_deseado["Sub ID"] = pd.to_numeric(datos_formato_deseado["Sub ID"], errors="coerce")
+        datos_formato_deseado.sort_values(by=["Sub ID"], inplace=True)
+        validar_sub_id_consecutivos(datos_formato_deseado)
+        return datos_formato_deseado
+
+    except Exception as e:
+        print(f"Error al cargar el archivo en formato 3: {e}")
+        return pd.DataFrame()
+
+
+
+    """
+    Elimina completamente las filas que contengan patrones de encabezados o estadísticas.
+    Solo devuelve las filas que son datos puros.
+    
+    Args:
+        ruta_archivo (str): Ruta al archivo de texto
+        debug (bool): Si True, imprime información de depuración
+    
+    Returns:
+        list: Lista de líneas que contienen solo datos puros
+    """
+    
+    # Patrones que indican líneas "sucias" a eliminar completamente
+    patrones_sucios = [
+        r"System Test Report",
+        r"PREMIER ART R",
+        r"\d{2}-\d{2}-\d{4}\d{2}:\d{2}[AP]M",
+        r"Test ID",
+        r"Test Type",
+        r"Test Date",
+        r"Remarks",
+        r"COOP\.AGR",
+        r"UHML.*ML.*UI.*Str.*Elg.*Mic",
+        r"Test.*Sub ID.*\(mm\)",
+        r"No.*\)",
+        r"Statistics",
+        r"Avg\d*-?\d*",
+        r"Median",
+        r"SD",
+        r"CV%",
+        r"Min",
+        r"Max",
+        r"MARFRA SA",
+        r"Temp\(.*C\)",
+        r"^\s*$",  # Líneas vacías
+        r"^\s*\d+\s*$",  # Líneas con solo uno o dos números (páginas)
+        r"tifier.*MGTA.*LOTE"  # Identificadores de lote
+    ]
+    
+    lineas_limpias = []
+    
+    try:
+        with open(ruta_archivo, 'r', encoding='latin1') as archivo:
+            lineas = archivo.readlines()
+        
+        for i, linea in enumerate(lineas):
+            linea_limpia = linea.strip()
+            
+            # Si la línea está vacía, saltarla
+            if not linea_limpia:
+                continue
+            
+            # Verificar si contiene algún patrón sucio
+            es_sucia = False
+            for patron in patrones_sucios:
+                if re.search(patron, linea_limpia, re.IGNORECASE):
+                    es_sucia = True
+                    if debug:
+                        print(f"Línea {i+1} eliminada por patrón '{patron}': {linea_limpia[:60]}...")
+                    break
+            
+            # Si es sucia, eliminar completamente
+            if es_sucia:
+                continue
+            
+            # Verificar si parece ser una línea de datos válida
+            partes = linea_limpia.split()
+            if len(partes) >= 5:  # Mínimo de columnas esperadas
+                try:
+                    # El primer elemento debe ser numérico (Sub ID)
+                    float(partes[0])
+                    lineas_limpias.append(linea_limpia)
+                    if debug:
+                        print(f"Línea {i+1} aceptada: {linea_limpia[:60]}...")
+                except ValueError:
+                    if debug:
+                        print(f"Línea {i+1} eliminada (primer campo no numérico): {linea_limpia[:60]}...")
+                    continue
+            else:
+                if debug:
+                    print(f"Línea {i+1} eliminada (pocas columnas): {linea_limpia[:60]}...")
+    
+    except Exception as e:
+        print(f"Error al procesar el archivo: {e}")
+        return []
+    
+    if debug:
+        print(f"\nResumen: {len(lineas_limpias)} líneas de datos válidas encontradas")
+    
+    return lineas_limpias

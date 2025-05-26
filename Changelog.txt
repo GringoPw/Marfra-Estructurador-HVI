@@ -28,5 +28,5 @@ Visuales:
 
 Versión 3.0
 Funcionalidades:
--Eliminamos boton promedio por deshuso.
+-Eliminamos boton promedio por desuso.
 -Se implemento nuevo formato de se carga de nueva maquina ART R.
