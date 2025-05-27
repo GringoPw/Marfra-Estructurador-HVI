@@ -1,1 +1,21 @@
-/__pycache__
+# Entornos virtuales
+venv/
+.env/
+ENV/
+
+# Archivos de IDE
+.vscode/
+.idea/
+
+# Archivos Python temporales
+__pycache__/
+*.py[cod]
+
+# Archivos de instalación/setup
+build/
+dist/
+*.egg-info/
+
+# Archivos de prueba y desarrollo
+tests/
+test_*.py

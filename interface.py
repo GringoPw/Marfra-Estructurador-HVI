@@ -12,7 +12,7 @@ class ModernInterface(tk.Tk):
         super().__init__()
         
         # Configuración básica de la ventana
-        self.title("Estructurador de datos - V3.3B")
+        self.title("Estructurador de datos - V3.4B")
         self.geometry("1200x700")
         self.configure(bg="#f0f4f8")
         

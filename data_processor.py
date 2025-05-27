@@ -369,6 +369,12 @@ def filtrar_datos_limpios(ruta_archivo, debug=False):
                 continue
 
             partes = linea_limpia.split()
+            # 🔧 Caso especial: Más de 16 columnas - fusionar las dos primeras
+            if len(partes) > 16:
+                partes[0] = partes[0] + partes[1]  # Fusionar las dos primeras columnas
+                partes.pop(1)  # Eliminar la segunda columna ahora fusionada
+                if debug:
+                    print(f"[Línea {i+1}] 🔧 Fusionadas columnas 1 y 2 por exceso de columnas: {linea_limpia}")
 
             # 🔧 Sub ID partido tipo '00 049420'
             if len(partes) >= 2 and re.match(r'^\d{2}$', partes[0]) and re.match(r'^\d{6}$', partes[1]):
