@@ -1,0 +1,6 @@
+=== LOG DE ERROR ===
+Fecha/Hora: 2025-05-28 09:30:42
+Tipo de error: general
+Título: Error Inesperado
+Datos del error:
+  - message: Ha ocurrido un error inesperado: cannot access local variable 'error_list' where it is not associated with a value

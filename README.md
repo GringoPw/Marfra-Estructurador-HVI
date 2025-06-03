@@ -1,33 +1,74 @@
-# **Desarrollo a medida estructurador de datos TXT**
+# 📊 ESTRUCTURADOR DE DATOS HVI - MARFRA S.A.
 
-## *Versión Beta*
-Sistema que captura los datos de archivos de texto de maquinas HVI. Los transforma y exporta a excel.
+![Versión](https://img.shields.io/badge/Versión-4.0-blue)
+![Estado](https://img.shields.io/badge/Estado-Producción-success)
+![Desarrollo](https://img.shields.io/badge/Desarrollo-Personalizado-orange)
 
-*Funcionalidade*s:
+## 🌟 Descripción
 
-* [X] Carga de archivos: Se añadió una función que permite cargar archivos en el sistema.
-* [X] Estructuración de datos: Se desarrolló un proceso para estandarizar y adaptar los datos a un formato común compatible con ambas máquinas.-Generación de grados comerciales: Los grados comerciales ahora se generan automáticamente en función de la información exportada por las máquinas.
-* [X] Verificación de valores extremos: Se implementó una función de promediación para detectar y validar valores fuera de lo esperado.
-* [X] Exportación de datos: Se añadió la posibilidad de exportar datos directamente al portapapeles, facilitando su inclusión en un Excel dinámico.
+**Estructurador de Datos HVI** es una aplicación desarrollada a medida para **MARFRA S.A.**, diseñada específicamente para estandarizar y procesar los datos generados por las máquinas de análisis de algodón (HVI - High Volume Instrument). Esta herramienta profesional permite unificar los diferentes formatos de salida de las tres máquinas HVI de la empresa en un formato estándar, facilitando el análisis y la gestión de los datos de calidad del algodón.
 
-## Versión 1.0
+## 💼 Características Principales
 
-*Funcionalidades:*
+### Procesamiento de Datos
+- ✅ **Compatibilidad Multi-formato**: Detecta automáticamente y procesa correctamente los datos de los tres diferentes modelos de máquinas HVI.
+- ✅ **Estandarización de Datos**: Convierte todos los formatos a una estructura unificada para facilitar el análisis.
+- ✅ **Generación de Grados Comerciales**: Calcula automáticamente los grados comerciales según estándares de la industria.
+- ✅ **Validación de Datos**: Detecta valores atípicos y errores en las mediciones.
+- ✅ **Ordenamiento Automático**: Organiza los datos por "Sub ID" para mantener la coherencia.
 
-* [X] Compatibilidad con múltiples formatos de archivo: Se añadió una verificación para garantizar que los archivos ingresados sean compatibles con diferentes formatos.
-* [X] Control de errores: Se implementaron diversas correcciones para el manejo de errores comunes.
-* [X] Corrección de lecturas atípicas: Mejoras en el procesamiento de datos inusuales para garantizar lecturas precisas.
-  Visuales:
-* [X] Diseño renovado: Se introdujo un aspecto moderno y minimalista en la interfaz del sistema.
+### Interfaz y Usabilidad
+- 🖥️ **Interfaz Moderna**: Diseño intuitivo y profesional con modo claro y oscuro.
+- 🔍 **Búsqueda y Filtrado**: Herramientas avanzadas para localizar datos específicos.
+- 📋 **Exportación Flexible**: Exportación a Excel, CSV y portapapeles para integración con otros sistemas.
+- ⚠️ **Gestión de Errores**: Identificación visual de errores con descripciones detalladas.
+- 🔄 **Edición en Tiempo Real**: Modificación directa de datos en la interfaz.
 
-## Versión 2.0
+## 🚀 Evolución del Desarrollo
 
-*Funcionalidades:*
+### Versión 4.0 (Actual)
+- Interfaz profesional completamente rediseñada
+- Sistema avanzado de detección y gestión de errores
+- Compatibilidad mejorada con múltiples formatos de archivo
+- Edición en línea de datos y exportación multi-formato
+- Modo oscuro y claro para mayor comodidad visual
 
-* [X] Ordenamiento automático: Ahora las columnas se ordenan automáticamente por "Sub ID".
-* [X] Información detallada de archivos: Al cargar un archivo .txt, se muestra información relevante, como el nombre del archivo, la cantidad de líneas y los errores detectados.
-* [X] Gestión de errores:
-* [X] Al hacer clic en un error, este se resalta directamente en la tabla.
-* [X] Al pasar el cursor sobre un error, se muestra una breve descripción del problema identificado.
-  Visuales:
-* [X] Modo oscuro: Se agregó un nuevo botón que permite alternar entre un modo claro y oscuro para mejorar la experiencia del usuario.
+### Versión 2.0
+- Ordenamiento automático por "Sub ID"
+- Información detallada de archivos al cargar
+- Sistema de gestión de errores con resaltado visual
+- Implementación del modo oscuro
+
+### Versión 1.0
+- Compatibilidad con múltiples formatos de archivo
+- Control de errores básico
+- Corrección de lecturas atípicas
+- Diseño renovado con interfaz moderna
+
+### Versión Beta
+- Carga de archivos básica
+- Estructuración inicial de datos
+- Generación de grados comerciales
+- Verificación de valores extremos
+- Exportación de datos al portapapeles
+
+## 🛠️ Tecnologías Utilizadas
+
+- **Python**: Lenguaje principal de desarrollo
+- **Tkinter**: Framework para la interfaz gráfica
+- **Pandas**: Procesamiento y análisis de datos
+- **NumPy**: Cálculos numéricos avanzados
+
+## 🔒 Desarrollo a Medida
+
+Esta aplicación ha sido desarrollada exclusivamente para **MARFRA S.A.** para satisfacer sus necesidades específicas de procesamiento de datos HVI. El software está optimizado para trabajar con los tres modelos de máquinas HVI que posee la empresa, garantizando la compatibilidad y precisión en el procesamiento de datos.
+
+## 📞 Soporte y Contacto
+
+Para soporte técnico, consultas o mejoras:
+- **Email**: joaquin.paw@gmail.com
+- **WhatsApp**: +54 3735 416373
+
+---
+
+*© 2024 - Desarrollo personalizado para MARFRA S.A. - Todos los derechos reservados*
